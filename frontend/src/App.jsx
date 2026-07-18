@@ -1,4 +1,7 @@
 import { useRef, useState } from 'react'
+
+import { sendTranscript } from './api'
+
 import './App.css'
 export default function App() {
 
@@ -13,6 +16,7 @@ export default function App() {
   const audioContextRef = useRef(null)
   const sourceRef = useRef(null)
   const processorRef = useRef(null)
+  const finalTextRef = useRef("")
 
   async function permissionCheck() {
     setFinalText('')
@@ -22,6 +26,14 @@ export default function App() {
       streamRef.current = stream
 
       const ws = new WebSocket(wsUrl)
+      setTimeout(() => {
+        // readyState 1 means OPEN
+        if (ws.readyState === WebSocket.OPEN) {
+          console.log("connection success");
+        } else {
+          console.log("connection failed");
+        }
+      }, 1000);
       wsRef.current = ws
 
       ws.onopen = () => {
@@ -64,7 +76,11 @@ export default function App() {
             const transcript = data.channel.alternatives[0].transcript || ''
             console.log(transcript)
             if (data.is_final) {
-              setFinalText((prev) => (prev ? prev + ' ' + transcript : transcript))
+              setFinalText((prev) => {
+                const updated = prev ? prev + ' ' + transcript : transcript
+                finalTextRef.current = updated
+                return updated
+              })
               setInterimText('')
             }
             else setInterimText(transcript)
@@ -91,8 +107,8 @@ export default function App() {
       //   formData.append('file', audioBlob, 'recording.webm')
       //   console.log(audioChunksRef.current)
       // }
-
-      if (wsRef.current.readyState === WebSocket.OPEN) {
+      setTimeout(async()=>{
+        if (wsRef.current.readyState === WebSocket.OPEN) {
         wsRef.current.close()
         wsRef.current = null
       }
@@ -101,6 +117,19 @@ export default function App() {
 
       setStatus("Mic turned off")
       setIsRecording(false)
+
+      const transcript = finalTextRef.current.trim()
+      if(transcript){
+        try {
+        setStatus("Classifying...")
+        const result = await sendTranscript(transcript)
+        console.log(`Classification as: ${result.type}`)
+      } catch (err) {
+        console.log(err)
+        setStatus("Failed to classify")
+      }
+      }
+      },300)
     }
   }
 
@@ -130,6 +159,7 @@ export default function App() {
         </button>
         <p>Status: {status}</p>
       </div>
+
     </div>
   )
 }
