@@ -20,7 +20,7 @@ export default async function classifyTranscript(transcript) {
         contents: prompt,
     })
     const raw = response.text
-    if(raw.includes('query')) return 'query'
+    if (raw.includes('query')) return 'query'   
     else return 'log'
 }
 

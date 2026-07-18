@@ -1,8 +1,16 @@
 import express from 'express'
 import 'dotenv/config'
+import cors from 'cors'
 import { WebSocketServer, WebSocket } from 'ws'
 
+import classifyRouter from './router.js'
+
 const app = express()
+
+app.use(express.json())
+app.use(cors())
+
+app.use("/classify",classifyRouter)
 
 const server = app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`)
