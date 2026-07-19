@@ -2,7 +2,7 @@ const url = import.meta.env.VITE_BACKEND_URL
 
 export async function sendTranscript(transcript) {
     try {
-        const response = await fetch(`${url}/classify/transcript`, {
+        const response = await fetch(`${url}/extract/transcript`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
