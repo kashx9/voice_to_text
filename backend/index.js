@@ -3,7 +3,8 @@ import 'dotenv/config'
 import cors from 'cors'
 import { WebSocketServer, WebSocket } from 'ws'
 
-import extractRouter from './router/router.js'
+import {extractRouter,queryResponseRouter} from './router/router.js'
+
 
 const app = express()
 
@@ -11,6 +12,7 @@ app.use(express.json())
 app.use(cors())
 
 app.use("/extract",extractRouter)
+app.use("/query",queryResponseRouter)
 
 const server = app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`)
