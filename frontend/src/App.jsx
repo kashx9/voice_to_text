@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 
-import { sendTranscript } from './api'
+import { extractTranscript, queryTranscript, sendTranscript } from './api'
 
 import './App.css'
 export default function App() {
@@ -9,6 +9,9 @@ export default function App() {
   const wsRef = useRef(null)
   const [finalText, setFinalText] = useState("")
   const [interimText, setInterimText] = useState("")
+
+  const userId="1"
+  const [resultMssg,setResultMssg] = useState("")
 
   const streamRef = useRef(null)
   const [isRecording, setIsRecording] = useState(false)
@@ -122,8 +125,19 @@ export default function App() {
       if(transcript){
         try {
         setStatus("Classifying...")
-        const result = await sendTranscript(transcript)
-        console.log(`Classification as: ${result.type}`)
+        const {type} = await sendTranscript(transcript)
+        console.log(type)
+        if(type==='log'){
+          setStatus('Saving...')
+          const saved = await extractTranscript(transcript,userId)
+          setResultMssg(`Saved: ${saved.category} — ${saved.item ?? saved.notes}`)
+        }
+        else{
+          setStatus('Thinking...')
+          const {answer} = await queryTranscript(transcript,userId)
+          setResultMssg(answer)
+        }
+        setStatus('Done')
       } catch (err) {
         console.log(err)
         setStatus("Failed to classify")
@@ -159,7 +173,11 @@ export default function App() {
         </button>
         <p>Status: {status}</p>
       </div>
-
+      {resultMssg && (
+        <div>
+          <p>{resultMssg}</p>
+        </div>
+      )}
     </div>
   )
 }

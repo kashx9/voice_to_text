@@ -3,7 +3,7 @@ import 'dotenv/config'
 import cors from 'cors'
 import { WebSocketServer, WebSocket } from 'ws'
 
-import {extractRouter,queryResponseRouter} from './router/router.js'
+import {extractRouter,queryResponseRouter,classifyRouter} from './router/router.js'
 
 
 const app = express()
@@ -11,6 +11,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
+app.use("/classify", classifyRouter) 
 app.use("/extract",extractRouter)
 app.use("/query",queryResponseRouter)
 
