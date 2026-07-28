@@ -3,7 +3,9 @@ import 'dotenv/config'
 import cors from 'cors'
 import { WebSocketServer, WebSocket } from 'ws'
 
-import {extractRouter,queryResponseRouter,classifyRouter} from './router/router.js'
+import classifyRouter from './router/classifyRouter.js'
+import extractRouter from './router/extractRouter.js'
+import queryResponseRouter from './router/queryRouter.js'
 
 
 const app = express()
