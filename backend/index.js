@@ -6,6 +6,7 @@ import { WebSocketServer, WebSocket } from 'ws'
 import classifyRouter from './router/classifyRouter.js'
 import extractRouter from './router/extractRouter.js'
 import queryResponseRouter from './router/queryRouter.js'
+import ingestRouter from './router/ingestRouter.js'
 
 
 const app = express()
@@ -16,6 +17,7 @@ app.use(cors())
 app.use("/classify", classifyRouter) 
 app.use("/extract",extractRouter)
 app.use("/query",queryResponseRouter)
+app.use("/ingest",ingestRouter)
 
 const server = app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`)
