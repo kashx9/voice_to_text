@@ -3,6 +3,6 @@ import {Router} from 'express'
 
 const ingestRouter = Router()
 
-ingestRouter.post("/text",ingestController)
+ingestRouter.post("/",ingestController)
 
 export default ingestRouter

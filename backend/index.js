@@ -2,6 +2,7 @@ import express from 'express'
 import 'dotenv/config'
 import cors from 'cors'
 import { WebSocketServer, WebSocket } from 'ws'
+import fileUpload from 'express-fileupload'
 
 import classifyRouter from './router/classifyRouter.js'
 import extractRouter from './router/extractRouter.js'
@@ -13,6 +14,7 @@ const app = express()
 
 app.use(express.json())
 app.use(cors())
+app.use(fileUpload())
 
 app.use("/classify", classifyRouter) 
 app.use("/extract",extractRouter)
