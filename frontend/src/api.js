@@ -13,13 +13,22 @@ async function post(path, body) {
 }
 
 export async function sendTranscript(transcript) {
-    return post('/classify',{transcript})
+    return post('/classify', { transcript })
 }
 
 export function extractTranscript(transcript, userId) {
-  return post('/extract/transcript', { transcript, userId })
+    return post('/extract/transcript', { transcript, userId })
 }
 
 export function queryTranscript(question, userId) {
-  return post('/query', { question, userId })
+    return post('/query', { question, userId })
+}
+
+export async function ingestFile(formData) {
+    const response = await fetch(`${url}/ingest`, {
+        method: 'POST',
+        body: formData
+    })
+    if(!response.ok) throw new Error(`HTTP error! Status: ${response.status}`)
+    return await response.json()
 }
